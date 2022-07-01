@@ -95,4 +95,4 @@ Como usuario de FABS, quiero que mis validaciones se ejecuten en un período de t
 Como usuario de FABS, quiero ver las etiquetas de estado correctas en el Panel de envío, para poder ver rápidamente mi historial de envíos.
 Como usuario de una agencia, quiero saber cuándo comienzan y terminan los períodos de envío, para saber cuándo comienza y termina el envío.
 Como usuario de una agencia, quiero una página de destino para navegar a las páginas FABS o DABS, para poder acceder a ambos lados del sitio.
-Como usuario de una agencia, quiero enviar mis elementos de datos entre comillas, para que Excel no elimine los ceros iniciales y finales.
+Como usuario de una agencia, quiero enviar mis elementos de datos entre comillas, para que Excel no elimine los ceros iniciales y finales
