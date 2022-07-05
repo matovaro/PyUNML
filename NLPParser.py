@@ -23,16 +23,15 @@ grammarEspanish = '\n'.join([
 	])
 
 class NLPParser:
-    def _init_(self):
-
-        self.spacy = spacy.load('es_core_news_lg')
-        self.stanza = stanza.Pipeline(lang='es', processors='tokenize,mwt,pos,lemma,depparse,ner',package='ancora')
+    def __init__(self):
+        self.sp = spacy.load('es_core_news_lg')
+        self.st = stanza.Pipeline(lang='es', processors='tokenize,mwt,pos,lemma,depparse,ner',package='ancora')
 
     def SpacyParser(self):
-        return self.spacy
+        return self.sp
 
     def StanzaParser(self):
-        return self.stanza
+        return self.st
 
     def RegexParser():
         return nltk.RegexpParser(grammarEspanish)

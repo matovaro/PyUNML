@@ -1,4 +1,4 @@
-from NLPParser import NLPParser as NLP
+import stanza
 
 def verificationReglas(word):
   
@@ -32,14 +32,14 @@ def contructionWord(ntree):
       word.append(i[0])
     #word2.append([i[0],i[1],i[2],i[3],i[4]])
   return word
-
-
-def userStoryTagged(txtUserStory):
-  arrayWordsTagged = []
-  docStanzaSpanish = NLP.StanzaParser(txtUserStory.lower())
-  for sent in docStanzaSpanish.sentences: 
-    for word in sent.words:
-      #print((word.text, word.upos, word.deprel,word.lemma,[[word.feats if word.feats else "_"]]))
-      arrayWordsTagged.append((word.text, word.upos, word.deprel,word.lemma,[[word.feats if word.feats else "_"]]))
   
-  return arrayWordsTagged
+def userStoryTagged(txtUserStory, NLPObj):
+    arrayWordsTagged = []
+    StanzaParser = NLPObj.StanzaParser()
+    docStanzaSpanish = StanzaParser(txtUserStory.lower())
+    for sent in docStanzaSpanish.sentences: 
+        for word in sent.words:
+        #print((word.text, word.upos, word.deprel,word.lemma,[[word.feats if word.feats else "_"]]))
+            arrayWordsTagged.append((word.text, word.upos, word.deprel,word.lemma,[[word.feats if word.feats else "_"]]))
+    
+    return arrayWordsTagged
