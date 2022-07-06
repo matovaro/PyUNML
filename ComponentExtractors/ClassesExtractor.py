@@ -15,7 +15,7 @@ rules = {
         
     },
     'Relaciones':{
-          'Reglas':{
+          'Reglas':
             r"""
               R1: {<SUST>(<EXC_TERM.*>)*(<EXC_TERM2>|<EXC_TERM3>)*<VERB><CCONJ>*<VERB>*(<EXC_TERM4>|<EXC_TERM1>)*<SUST>}
               R3:  {(<SUST>)(<EXC_TERM1>)*<ADP>(<EXC_TERM1>)*(<SUST>)}
@@ -29,7 +29,7 @@ rules = {
               SUST_2: {(<NOUN>|<PROPN>)+}
               """
             
-          },
+          ,
           'Excluir' : [
                 'EXC_TERM1',
                 'EXC_TERM2', 
@@ -95,7 +95,7 @@ class ClassesExtractor:
     ########################### Funciones
 
     # Metodo para la remoción de palabras que no seran tenidas en cuenta en el analisis, debido a que podrian causar ruido
-    def verificationReglasClase(word):
+    def verificationReglasClase(self, word):
         
         #Pendiente: Ajustar resultados de patrones a condiciones de evitar estas palabras segun Btoush y la relacion "A is a B"
         J= ['número', 'no', 'codigo', 'fecha', 'tipo', 'volumen', 'nacimiento', 'id', 'dirección', 'nombre']
@@ -115,30 +115,30 @@ class ClassesExtractor:
             return False
 
     #Metodo que determina si una palabra esta en plural o singular, devuelve su correspondiente singular y retorna un array con las palabras del sustantivo compuesto
-    def contructionWordSustantivo(ntree, exclusionRules = []):
+    def contructionWordSustantivo(self, ntree, exclusionRules = []):
         #print(n.label())
         word=[]
         word2=[]
         for i in ntree:
 
             if(type(i)==nltk.tree.Tree and i.label() not in exclusionRules):
-                wordTemp = contructionWordSustantivo(i, exclusionRules)
+                wordTemp = self.contructionWordSustantivo(i, exclusionRules)
                 if wordTemp:
                     word.append(wordTemp)
             elif(type(i)!=nltk.tree.Tree):
                 caracteristicas = i[4][0][0].split('|')
 
-            if i[1] == 'NOUN' or i[1] == 'PROPN':
-                if 'Number=Plur' in caracteristicas:
-                    word.append(i[3])
-                elif 'Number=Sing' in caracteristicas:
-                    word.append(i[0])
-                else:
-                    word.append(i[0])
+                if i[1] == 'NOUN' or i[1] == 'PROPN':
+                    if 'Number=Plur' in caracteristicas:
+                        word.append(i[3])
+                    elif 'Number=Sing' in caracteristicas:
+                        word.append(i[0])
+                    else:
+                        word.append(i[0])
             #word2.append([i[0],i[1],i[2],i[3],i[4]])
         return word
 
-    def obtenerRelacionesSustComp(arrSustantivo, unionWord = 'UNION'):
+    def obtenerRelacionesSustComp(self, arrSustantivo, unionWord = 'UNION'):
         arrRelaciones = []
         idx_1 = 0
         idx_2 = 1
@@ -148,7 +148,7 @@ class ClassesExtractor:
             idx_2 += 1
         return arrRelaciones
 
-    def relacionesSustComp(txtRegla,arrDatos):
+    def relacionesSustComp(self, txtRegla,arrDatos):
         arrRelaciones = []
         if(txtRegla == "H2"):
             # Particionamos el sust. compuesto en sustantivos simples
@@ -156,7 +156,7 @@ class ClassesExtractor:
             if len(arrSustantivo) > 1:
                 # Si hay mas de un sustantivo, creamos una relacion por cada pareja consecutiva del 
                 # sust. compuesto
-                arrRelaciones = obtenerRelacionesSustComp(arrSustantivo)
+                arrRelaciones = self.obtenerRelacionesSustComp(arrSustantivo)
         elif(txtRegla == "R3"):
             txtADP = ''
             susts = [[]]
@@ -175,12 +175,12 @@ class ClassesExtractor:
                 for itm in susts:
                     arrTemp.append('_'.join(itm))
                 
-                arrRelaciones = obtenerRelacionesSustComp(arrTemp,'ADP')
+                arrRelaciones = self.obtenerRelacionesSustComp(arrTemp,'ADP')
 
         return arrRelaciones
 
 
-    def relacionesHerencia(arrRelacion, arrRelacionesTotal):
+    def relacionesHerencia(self, arrRelacion, arrRelacionesTotal):
         sustComp = arrRelacion[2].split('_')
         if(sustComp[0] in rules['Relaciones']['TYPE_OPTIONS'] and len(sustComp) > 1):
             newSust = '_'.join(sustComp[1:])
@@ -190,7 +190,15 @@ class ClassesExtractor:
             arrRelacionesTotal["HER"]["H4"].append(arrRelacion)
         return arrRelacionesTotal
 
-    def obtenerRelaciones(arrayParsed,relaciones,inclusionRules = [],exclusionRules = []):
+    def flatTree(self, parsed,arrItems):
+        for ele in parsed:
+            if isinstance(ele, list):
+                arrItems = self.flatTree(ele,arrItems)
+            else:
+                arrItems.append((ele[0], ele[1]))
+        return arrItems
+
+    def obtenerRelaciones(self, arrayParsed,relaciones,inclusionRules = [],exclusionRules = []):
   
         for ele in arrayParsed:
             word=[]
@@ -205,10 +213,10 @@ class ClassesExtractor:
                     for item in ele:
                         if type(item)==nltk.tree.Tree:
                             if item.label() == 'SUST':
-                                txtSustantivo = '_'.join(contructionWordSustantivo(item,exclusionRules)[0])
-                                relaciones["COMP"]["H2"] = relaciones["COMP"]["H2"] + relacionesSustComp("H2",txtSustantivo)
-                                arrTreeFlat = flatTree(item,[])
-                                relaciones["ASOC"]["R3"] = relaciones["ASOC"]["R3"] + relacionesSustComp("R3",arrTreeFlat)
+                                txtSustantivo = '_'.join(self.contructionWordSustantivo(item,exclusionRules)[0])
+                                relaciones["COMP"]["H2"] = relaciones["COMP"]["H2"] + self.relacionesSustComp("H2",txtSustantivo)
+                                arrTreeFlat = self.flatTree(item,[])
+                                relaciones["ASOC"]["R3"] = relaciones["ASOC"]["R3"] + self.relacionesSustComp("R3",arrTreeFlat)
                                 relacion.append(txtSustantivo)
                         elif item[1]!='CCONJ':
                             if ele.label() in ["R1","R3"]:
@@ -234,7 +242,7 @@ class ClassesExtractor:
                             elif ele.label() in ["H4"]:
                                 # H4 y H5
                                 relacionTemp = [relacion[0],relacion[index],relacion[len(relacion)-1]]
-                                relaciones = relacionesHerencia(relacionTemp,relaciones)
+                                relaciones = self.relacionesHerencia(relacionTemp,relaciones)
                                 #relaciones["HER"]["H4"].append(relacionTemp)
                     elif len(relacion) == 3:
                         #Guarda la relacion en la categoria correspondiente
@@ -246,12 +254,12 @@ class ClassesExtractor:
                                 relaciones["ASOC"][ele.label()].append(relacion)
                         elif ele.label() in ["H4"]:
                             # H4 y H5
-                            relaciones = relacionesHerencia(relacion,relaciones)
+                            relaciones = self.relacionesHerencia(relacion,relaciones)
                             #relaciones["HER"]["H4"].append(relacion)
         return relaciones
 
     ## Analiza un string recibido y retorna la frecuencia de los terminos que incluye
-    def obtenerResultadosFrecuencia(txtStringComponentes):
+    def obtenerResultadosFrecuencia(self, txtStringComponentes):
         vectorizer = CountVectorizer()
         X = vectorizer.fit_transform(txtStringComponentes)
         frecuencias=X.toarray()
@@ -271,8 +279,8 @@ class ClassesExtractor:
         for n in classParsedStory:
             word=[]
             if(type(n)==nltk.tree.Tree):
-                word = contructionWordSustantivo(n)
-                if verificationReglasClase(word):
+                word = self.contructionWordSustantivo(n)
+                if self.verificationReglasClase(word):
                     classStringArray.append("_".join(word))
                 classString=" ".join(classStringArray)
         
@@ -288,12 +296,12 @@ class ClassesExtractor:
         relationTester = self.relationsRegexParser.parse(test)
         #print(relationTester)
         
-        relaciones = obtenerRelaciones(relationParsedStory,relations,rules['Relaciones']['Incluir'],rules['Relaciones']['Excluir'])
+        relaciones = self.obtenerRelaciones(relationParsedStory,relations,rules['Relaciones']['Incluir'],rules['Relaciones']['Excluir'])
         #print(relaciones)
         
         return relaciones
     
-    def depuracionRelaciones(arrRel):
+    def depuracionRelaciones(self, arrRel):
         relaciones = []
         entidadesRelaciones = []
         #ASOC
@@ -339,7 +347,7 @@ class ClassesExtractor:
         entidadesRelaciones = list(set(entidadesRelaciones))
         return relaciones,entidadesRelaciones,arrRelAssigned
 
-    def numAparObjeto(objeto,array,index):
+    def numAparObjeto(self, objeto,array,index):
         counter = 0
         objetosRelacionados = []
 
@@ -354,7 +362,7 @@ class ClassesExtractor:
         
         return counter,objetosRelacionados
 
-    def construirArregloClases(atributos,metodos,relaciones):
+    def construirArregloClases(self, atributos,metodos,relaciones):
         arregloDiagrama = {}
         clases = {}
         for atributo in atributos:
@@ -386,3 +394,131 @@ class ClassesExtractor:
                 relacionesAdicionadas.append([relacion[1],relacion[0]])
         
         return arregloDiagrama
+
+    def ClassesProcessing(self, ClassRelations, ClassList):
+        relacionesProcesadas,preClases,arrClavesRelaciones = self.depuracionRelaciones(ClassRelations)
+        classes= self.obtenerResultadosFrecuencia(ClassList)
+
+        ######################################################################
+        ######################            ####################################
+        ###################### Relaciones ####################################
+        ######################            ####################################
+        ######################################################################
+        relacionesFinales = []
+
+        #Obtiene las "clases" de las relaciones, determina si se encuentran en las clases obtenidas y las guarda en una lista
+        clasesRelacionadas = []
+        #for rel in relacionesProcesadas:
+        for rel in ClassRelations['ASOC']['R3']:
+            ## Revisa si el sustantivo de la relacion puede ser reducido y lo hace si si
+            pclass2 = rel[2].split('_')[0]
+            aparicionesClass2,objRelClass2 = self.numAparObjeto(pclass2,ClassRelations['COMP']['H2'],0)
+            if pclass2 in preClases or aparicionesClass2 > 1:
+                rel[2] = pclass2
+
+            
+            if rel[2] in classes['Resultados']:
+                clasesRelacionadas.append(rel[2])
+
+        newClasesR3 = []
+        for classe in classes['Resultados']:
+            if classe in clasesRelacionadas:
+                newClasesR3.append(classe)
+        #Obtiene las "clases" de las relaciones, determina si se encuentran en las clases obtenidas y las guarda en una lista
+        clasesRelacionadas = []
+        #for rel in relacionesProcesadas:
+        for rel in ClassRelations['ASOC']['R1']:
+            ## Revisa si el sustantivo de la relacion puede ser reducido y lo hace si si
+            pclass1 = rel[0].split('_')[0]
+            pclass2 = rel[2].split('_')[0]
+            aparicionesClass1,objRelClass1 = self.numAparObjeto(pclass1,ClassRelations['COMP']['H2'],0)
+            aparicionesClass2,objRelClass2 = self.numAparObjeto(pclass2,ClassRelations['COMP']['H2'],0)
+            if pclass1 in preClases or aparicionesClass1 > 1:
+                rel[0] = pclass1
+            if pclass2 in preClases or aparicionesClass2 > 1:
+                rel[2] = pclass2
+
+            
+            if rel[0] in classes['Resultados'] and rel[2] in classes['Resultados']:
+                #relacionesFinales.append(rel)
+                clasesRelacionadas.append(rel[0])
+                clasesRelacionadas.append(rel[2])
+            else:
+                if rel[0] in classes['Resultados']:
+                    clasesRelacionadas.append(rel[0])
+                if rel[2] in classes['Resultados']:
+                    clasesRelacionadas.append(rel[2])
+
+        #recorre la lsita obtenida anteriormente y elimina las clases que no se encuentren en ella
+        newClasesR1 = []
+        for classe in classes['Resultados']:
+            if classe in clasesRelacionadas:
+                newClasesR1.append(classe)
+
+        classes['Resultados'] = list(set(newClasesR1+newClasesR3))
+
+
+        for rel in relacionesProcesadas:
+            ## Revisa si el sustantivo de la relacion puede ser reducido y lo hace si si
+            pclass1 = rel[0].split('_')[0]
+            pclass2 = rel[1].split('_')[0]
+            aparicionesClass1,objRelClass1 = self.numAparObjeto(pclass1,ClassRelations['COMP']['H2'],0)
+            aparicionesClass2,objRelClass2 = self.numAparObjeto(pclass2,ClassRelations['COMP']['H2'],0)
+            if pclass1 in preClases or aparicionesClass1 > 1:
+                rel[0] = pclass1
+            if pclass2 in preClases or aparicionesClass2 > 1:
+                rel[1] = pclass2
+
+            if rel[0] in classes['Resultados'] and rel[1] in classes['Resultados'] and rel[0] != rel[1]:
+                relacionesFinales.append(rel)
+
+        ######################################################################
+        ######################                      ##########################
+        ######################       Atributos      ##########################
+        ######################                      ##########################
+        ######################################################################
+
+
+        preAtributos = ClassRelations['COMP']['H1'] + ClassRelations['COMP']['H2']
+        atributos = []
+        for r in ClassRelations['COMP']['H1']:
+            aparicionesH1,objRelH1 = self.numAparObjeto(r[2],ClassRelations['COMP']['H1'],2) 
+            aparicionesH2,objRelH2 = self.numAparObjeto(r[2],ClassRelations['COMP']['H2'],0) 
+            boolUnicaRelacion = aparicionesH1 < 2 and aparicionesH2 < 2 and len(list(set(objRelH1 + objRelH2))) < 2
+
+            if r[2] not in classes['Resultados']:
+                atributos.append((r[0],r[2]))
+
+        for r in ClassRelations['COMP']['H2']:
+            aparicionesH1,objRelH1 = self.numAparObjeto(r[0],ClassRelations['COMP']['H1'],2) 
+            aparicionesH2,objRelH2 = self.numAparObjeto(r[0],ClassRelations['COMP']['H2'],0) 
+            boolUnicaRelacion = aparicionesH1 < 2 and aparicionesH2 < 2 and len(list(set(objRelH1 + objRelH2))) < 2
+
+            if r[0] not in classes['Resultados']:
+                atributos.append((r[2],r[0]))
+
+        ######################################################################
+        ######################                      ##########################
+        ######################        Metodos       ##########################
+        ######################                      ##########################
+        ######################################################################
+        metodos = []
+
+        for rel in ClassRelations['ASOC']['R1']:
+            ## Revisa si el sustantivo de la relacion puede ser reducido y lo hace si si
+            pclass1 = rel[0].split('_')[0]
+            pclass2 = rel[2].split('_')[0]
+            if pclass1 in classes['Resultados']:
+                rel[0] = pclass1
+            if pclass2 in classes['Resultados']:
+                rel[2] = pclass2
+
+            
+            if rel[0] in classes['Resultados']:
+                #relacionesFinales.append(rel)
+                metodos.append((rel[0],'_'.join([rel[1],rel[2]])))
+
+        arregloClases = self.construirArregloClases(atributos,metodos,relacionesFinales)
+        classes['Resultados'] = arregloClases['Clases'].keys()
+
+        return arregloClases

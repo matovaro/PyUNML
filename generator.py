@@ -49,9 +49,9 @@ for line in lines:
     StoryEntities = EntitiesExtr.EntitiesStory(arrayUSTagged, StoryEntities)
 
     #Clases
-    ClassList.append(CE.ClassesExtraction(arrayUSTagged))
+    ClassList.append(ClassExtr.ClassesExtraction(arrayUSTagged))
 
-    ClassRelations = CE.RelationsExtraction(arrayUSTagged,ClassRelations)
+    ClassRelations = ClassExtr.RelationsExtraction(arrayUSTagged,ClassRelations)
 
     numberLine = numberLine + 1
 
@@ -59,4 +59,8 @@ f_obj.close()
 
 EntitiesList = EntitiesExtr.EntitiesExtraction(StoryEntities)
 
+StoryClasses = ClassExtr.ClassesProcessing(ClassRelations, ClassList)
+
 print(EntitiesList)
+
+print(StoryClasses)
