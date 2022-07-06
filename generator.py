@@ -1,5 +1,5 @@
-from NLPParser import NLPParser as NLP
-import funciones as fc
+from General.NLPParser import NLPParser as NLP
+import General.funciones as fc
 
 from ComponentExtractors.EntitiesExtractor import EntitiesExtractor as EE
 

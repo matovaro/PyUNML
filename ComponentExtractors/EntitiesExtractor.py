@@ -1,8 +1,8 @@
 import sklearn
 import nltk
 import numpy as np
-import funciones as fc
-from NLPParser import NLPParser as NLP
+import General.funciones as fc
+from General.NLPParser import NLPParser as NLP
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
