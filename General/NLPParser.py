@@ -18,5 +18,5 @@ class NLPParser:
     def StanzaParser(self):
         return self.st
 
-    def RegexParser(rules):
-        return nltk.RegexpParser(rules)
+    def RegexParser(rules, loops = 1):
+        return nltk.RegexpParser(rules, loop=loops)
