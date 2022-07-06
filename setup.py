@@ -1,11 +1,17 @@
-from os import system
+import spacy
+import stanza
+import nltk
+from nltk import word_tokenize, sent_tokenize
+from nltk.corpus import stopwords
+from nltk import pos_tag
+from nltk.chunk import conlltags2tree, tree2conlltags 
+from nltk.chunk import ne_chunk
 
-#system('pip install -U spacy')
-#system('pip install stanza')
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+nltk.download('maxent_ne_chunker')
+nltk.download('words')
+nltk.download('stopwords')
 
-#system('python3 -m spacy download es_core_news_lg')
-#system('pip install nltk')
-
-#system('export PATH=$PATH:/home/mike/.local/bin')
-
-system('pip3 install -U scikit-learn')
+stanza.download('es') # download English model
+stanza.download(lang="es",package=None,processors={"ner":"ancora"})

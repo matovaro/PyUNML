@@ -7,12 +7,16 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-
+entitiesRules = '\n'.join([
+    'R2: {(<NOUN>|<PROPN>)<ADJ><DET>?(<NOUN>|<PROPN>)*}',
+    'R3: {(<NOUN>|<PROPN>)}'
+    
+    ])
 
 class EntitiesExtractor:
 
     def __init__(self):
-        self.RegexParser = NLP.RegexParser()
+        self.RegexParser = NLP.RegexParser(entitiesRules)
 
     def EntitiesStory(self, arrayTagged, StoryEntities):
         cs = self.RegexParser.parse(arrayTagged)
@@ -33,7 +37,7 @@ class EntitiesExtractor:
         vectorizer = CountVectorizer()
         X = vectorizer.fit_transform(StoriesEntities)
         frecuencias=X.toarray()
-        feature_names=vectorizer.get_feature_names()
+        feature_names=vectorizer.get_feature_names_out()
         frec_proba=(frecuencias.sum(axis=0))/np.sum(frecuencias)
         new_list = [[frec_proba[i], feature_names[i]] for i in range(0, len(frec_proba))]
         new_list.sort(reverse=True, key=lambda x: x[0])
