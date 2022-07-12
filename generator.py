@@ -5,7 +5,8 @@ from ComponentExtractors.EntitiesExtractor import EntitiesExtractor as EE
 from ComponentExtractors.ClassesExtractor import ClassesExtractor as CE
 from ComponentExtractors.CaseUseExtractor import CaseUseExtractor as CUE
 
-txtArchivo = 'USTest.txt' #input('Ruta o nombre del archivo de texto: ')
+#txtArchivo = 'USTest.txt'
+txtArchivo = input('Ruta o nombre del archivo de texto: ')
 
 
 NLPObj = NLP()

@@ -303,10 +303,22 @@ class CaseUseExtractor:
         
         return actors, ActorsRelations
 
+    def construirArregloCU(self, arrayCU):
+        UseCases = {}
+
+        for cu in arrayCU:
+            if cu[0] not in UseCases:
+                UseCases[cu[0]] = []
+            
+            UseCases[cu[0]].append(cu[1])
+
+        return UseCases
+
     def CaseUseProcessing(self, actors, ActorsRelations):
         relacionesFinales = []
         for rel in ActorsRelations:
             if rel[0] in actors:
                 relacionesFinales.append([rel[0], rel[1]+' '+rel[2]])
         
-        return relacionesFinales
+        UseCases = self.construirArregloCU(relacionesFinales)
+        return UseCases
