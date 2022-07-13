@@ -77,7 +77,7 @@ StoryCaseUse = CaseUseExtr.CaseUseProcessing(ActorsList, ActorsRelations)
 
 print('')
 print('############################# ENTIDADES ###################################')
-print(EntitiesList)
+print(StoryEntities)
 
 print('')
 print('############################# CLASES ###################################')
