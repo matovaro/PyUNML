@@ -387,12 +387,30 @@ class ClassesExtractor:
         arregloDiagrama['Relaciones'] = []
 
         relacionesAdicionadas = []
+
+        clasesFinales = []
         for relacion in relaciones:
+            ### Por EVALUAR ###
+            if relacion[0] not in clases and relacion[1] in arregloDiagrama['Clases']:
+                clases[relacion[0]] = {}
+            if relacion[1] not in clases and relacion[0] in arregloDiagrama['Clases']:
+                clases[relacion[1]] = {}
+        
+            #####################
+
             if relacion[0] in clases.keys() and relacion[1] in clases.keys() and [relacion[0],relacion[1]] not in relacionesAdicionadas:
                 arregloDiagrama['Relaciones'].append(relacion)
                 relacionesAdicionadas.append([relacion[0],relacion[1]])
                 relacionesAdicionadas.append([relacion[1],relacion[0]])
+                clasesFinales.append(relacion[0])
+                clasesFinales.append(relacion[1])
         
+        for item in clases.copy().keys():
+            if item not in clasesFinales:
+                clases.pop(item)
+
+        arregloDiagrama['Clases'] = clases
+
         return arregloDiagrama
 
     def ClassesProcessing(self, ClassRelations, ClassList):

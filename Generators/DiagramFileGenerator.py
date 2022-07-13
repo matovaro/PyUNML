@@ -40,11 +40,13 @@ class DiagramFileGenerator:
         for index in classes.keys():
             ClassFile.write('class ' + index + ' {' +'\n')
 
-            for attr in classes[index]['Atributos']:
-                ClassFile.write('   ' + attr +'\n')
+            if 'Atributos' in classes[index]:
+                for attr in classes[index]['Atributos']:
+                    ClassFile.write('   ' + attr +'\n')
 
-            for met in classes[index]['Metodos']:
-                ClassFile.write('   ' + met +'() \n')
+            if 'Metodos' in classes[index]:
+                for met in classes[index]['Metodos']:
+                    ClassFile.write('   ' + met +'() \n')
 
             ClassFile.write('}' +'\n')
         
