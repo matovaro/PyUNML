@@ -1,4 +1,5 @@
-
+from os import system, mkdir
+import errno
 
 class DiagramFileGenerator:
 
@@ -7,9 +8,16 @@ class DiagramFileGenerator:
         fileName = fileName[len(fileName)-1].split('\\')
         fileName = fileName[len(fileName)-1].split('.')[0]
         self.FileName = fileName
+        self.ResultsFolder = 'Resultados'
+
+        try:
+            mkdir(self.ResultsFolder)
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise
 
     def EntitiesFile(self, entities):
-        nameFile = self.FileName + '-Entities.txt'
+        nameFile = self.ResultsFolder + '/' + self.FileName + '-Entities.txt'
         EntFile = open(nameFile,'a')
 
         EntFile.write('---------- LISTA DE ENTIDADES -----------' +'\n')
@@ -23,7 +31,7 @@ class DiagramFileGenerator:
         return nameFile
 
     def ClassFile(self, arrayClasses):
-        nameFile = self.FileName + '-Classes.txt'
+        nameFile = self.ResultsFolder + '/' + self.FileName + '-Classes.txt'
 
         classes = arrayClasses['Clases']
         relations = arrayClasses['Relaciones']
@@ -59,18 +67,23 @@ class DiagramFileGenerator:
 
         ClassFile.close()
 
+        system('python3 -m plantuml ' + nameFile)
+
         return nameFile
 
     def CaseUseFile(self, CaseUseArray):
-        nameFile = self.FileName + '-CaseUse.txt'
+        nameFile = self.ResultsFolder + '/' + self.FileName + '-CaseUse'
 
-        CaseFile = open(nameFile,'a')
-
-        CaseFile.write('skinparam actorStyle awesome' +'\n')
+        
         for actor in CaseUseArray.keys():
+            actorFileName = nameFile + '-' + actor + '.txt'
+            CaseFile = open(actorFileName,'a')
+            CaseFile.write('left to right direction' +'\n')
+            CaseFile.write('skinparam actorStyle awesome' +'\n')
+
             for case in CaseUseArray[actor]:
                 CaseFile.write(':' + actor + ': --> (' + case + ')' +'\n')
-
-        CaseFile.close()
+            CaseFile.close()
+            system('python3 -m plantuml ' + actorFileName)
 
         return nameFile
