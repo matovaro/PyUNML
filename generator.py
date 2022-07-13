@@ -4,15 +4,17 @@ import General.funciones as fc
 from ComponentExtractors.EntitiesExtractor import EntitiesExtractor as EE
 from ComponentExtractors.ClassesExtractor import ClassesExtractor as CE
 from ComponentExtractors.CaseUseExtractor import CaseUseExtractor as CUE
+from Generators.DiagramFileGenerator import DiagramFileGenerator as DFG
 
-#txtArchivo = 'USTest.txt'
-txtArchivo = input('Ruta o nombre del archivo de texto: ')
+txtArchivo = 'USTest.txt'
+#txtArchivo = input('Ruta o nombre del archivo de texto: ')
 
 
 NLPObj = NLP()
 EntitiesExtr = EE()
 ClassExtr = CE()
 CaseUseExtr = CUE()
+FileGenerator = DFG(txtArchivo)
 
 with open(txtArchivo) as f_obj:
     lines = f_obj.readlines()
@@ -77,7 +79,9 @@ StoryCaseUse = CaseUseExtr.CaseUseProcessing(ActorsList, ActorsRelations)
 
 print('')
 print('############################# ENTIDADES ###################################')
-print(StoryEntities)
+#print(StoryEntities)
+entFile = FileGenerator.EntitiesFile(StoryEntities)
+print(entFile)
 
 print('')
 print('############################# CLASES ###################################')
