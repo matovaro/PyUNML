@@ -7,7 +7,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-rules = {
+rulesActors = {
     'Actores':{
         'Reglas':
             r"""
@@ -40,8 +40,8 @@ rules = {
 class CaseUseExtractor:
 
     def __init__(self):
-        self.actorsRegexParser = NLP.RegexParser(rules['Actores']['Reglas'], 2)
-        self.relationsRegexParser = NLP.RegexParser(rules['Relaciones']['Reglas'], 3)
+        self.actorsRegexParser = NLP.RegexParser(rulesActors['Actores']['Reglas'], 2)
+        self.relationsRegexParser = NLP.RegexParser(rulesActors['Relaciones']['Reglas'], 3)
 
     def ActorsRegexParser(self):
         return self.actorsRegexParser
@@ -137,7 +137,7 @@ class CaseUseExtractor:
 
     def relacionesHerencia(self, arrRelacion, arrRelacionesTotal):
         sustComp = arrRelacion[2].split('_')
-        if(sustComp[0] in rules['Relaciones']['TYPE_OPTIONS'] and len(sustComp) > 1):
+        if(sustComp[0] in rulesActors['Relaciones']['TYPE_OPTIONS'] and len(sustComp) > 1):
             newSust = '_'.join(sustComp[1:])
             arrRelacion[2] = newSust
             arrRelacionesTotal["HER"]["H5"].append(arrRelacion)
@@ -176,12 +176,12 @@ class CaseUseExtractor:
                         elif item[1]!='CCONJ':
                             if ele.label() in ["R1","R3"]:
                                 # COMP_H1
-                                if(item[0] in rules['Relaciones']['INCLUDE_VERBS']):
+                                if(item[0] in rulesActors['Relaciones']['INCLUDE_VERBS']):
                                     relacion.append(item[0])
                                 else:
                                     relacion.append(item[3])
                             elif ele.label() in ["H4"]:
-                                if(item[0] in rules['Relaciones']['TO_BE_AUX']):
+                                if(item[0] in rulesActors['Relaciones']['TO_BE_AUX']):
                                     relacion.append(item[3])
 
                     #Validamos si la relacion contiene mas de una union y crea multiples relaciones en caso de que asi sea
@@ -190,7 +190,7 @@ class CaseUseExtractor:
                             
                             if ele.label() in ["R1","R3"]:
                                 relacionTemp = [relacion[0],relacion[index],relacion[len(relacion)-1]]
-                                if relacion[index] in rules['Relaciones']['INCLUDE_VERBS']:
+                                if relacion[index] in rulesActors['Relaciones']['INCLUDE_VERBS']:
                                     relaciones["COMP"]["H1"].append(relacionTemp)
                                 else:
                                     relaciones["ASOC"][ele.label()].append(relacionTemp)
@@ -203,7 +203,7 @@ class CaseUseExtractor:
                         #Guarda la relacion en la categoria correspondiente
                         if ele.label() in ["R1","R3"]:
                             # COMP_H1
-                            if relacion[1] in rules['Relaciones']['INCLUDE_VERBS']:
+                            if relacion[1] in rulesActors['Relaciones']['INCLUDE_VERBS']:
                                 relaciones["COMP"]["H1"].append(relacion)
                             else:
                                 relaciones["ASOC"][ele.label()].append(relacion)

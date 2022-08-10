@@ -5,3 +5,5 @@ ComponentExtractors/__pycache__/EntitiesExtractor.cpython-310.pyc
 General/__pycache__/funciones.cpython-310.pyc
 General/__pycache__/NLPParser.cpython-310.pyc
 Generators/__pycache__/DiagramFileGenerator.cpython-310.pyc
+venv/
+.idea/

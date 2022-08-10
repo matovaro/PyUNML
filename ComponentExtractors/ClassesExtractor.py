@@ -7,7 +7,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-rules = {
+rulesClases = {
     'Clases':{
         'Reglas':[
             'R2: {(<NOUN>|<PROPN>)(<ADJ>|<DET>)*(<NOUN>|<PROPN>)*}'           
@@ -80,11 +80,11 @@ rules = {
     }
 }
 
-classRules = '\n'.join(rules['Clases']['Reglas'])
+classRules = '\n'.join(rulesClases['Clases']['Reglas'])
 class ClassesExtractor:
     def __init__(self):
         self.classRegexParser = NLP.RegexParser(classRules)
-        self.relationsRegexParser = NLP.RegexParser(rules['Relaciones']['Reglas'], 4)
+        self.relationsRegexParser = NLP.RegexParser(rulesClases['Relaciones']['Reglas'], 4)
 
     def ClassRegexParser(self):
         return self.classRegexParser
@@ -182,7 +182,7 @@ class ClassesExtractor:
 
     def relacionesHerencia(self, arrRelacion, arrRelacionesTotal):
         sustComp = arrRelacion[2].split('_')
-        if(sustComp[0] in rules['Relaciones']['TYPE_OPTIONS'] and len(sustComp) > 1):
+        if(sustComp[0] in rulesClases['Relaciones']['TYPE_OPTIONS'] and len(sustComp) > 1):
             newSust = '_'.join(sustComp[1:])
             arrRelacion[2] = newSust
             arrRelacionesTotal["HER"]["H5"].append(arrRelacion)
@@ -221,12 +221,12 @@ class ClassesExtractor:
                         elif item[1]!='CCONJ':
                             if ele.label() in ["R1","R3"]:
                                 # COMP_H1
-                                if(item[0] in rules['Relaciones']['INCLUDE_VERBS']):
+                                if(item[0] in rulesClases['Relaciones']['INCLUDE_VERBS']):
                                     relacion.append(item[0])
                                 else:
                                     relacion.append(item[3])
                             elif ele.label() in ["H4"]:
-                                if(item[0] in rules['Relaciones']['TO_BE_AUX']):
+                                if(item[0] in rulesClases['Relaciones']['TO_BE_AUX']):
                                     relacion.append(item[3])
 
                     #Validamos si la relacion contiene mas de una union y crea multiples relaciones en caso de que asi sea
@@ -235,7 +235,7 @@ class ClassesExtractor:
                             
                             if ele.label() in ["R1","R3"]:
                                 relacionTemp = [relacion[0],relacion[index],relacion[len(relacion)-1]]
-                                if relacion[index] in rules['Relaciones']['INCLUDE_VERBS']:
+                                if relacion[index] in rulesClases['Relaciones']['INCLUDE_VERBS']:
                                     relaciones["COMP"]["H1"].append(relacionTemp)
                                 else:
                                     relaciones["ASOC"][ele.label()].append(relacionTemp)
@@ -248,7 +248,7 @@ class ClassesExtractor:
                         #Guarda la relacion en la categoria correspondiente
                         if ele.label() in ["R1","R3"]:
                             # COMP_H1
-                            if relacion[1] in rules['Relaciones']['INCLUDE_VERBS']:
+                            if relacion[1] in rulesClases['Relaciones']['INCLUDE_VERBS']:
                                 relaciones["COMP"]["H1"].append(relacion)
                             else:
                                 relaciones["ASOC"][ele.label()].append(relacion)
@@ -296,7 +296,7 @@ class ClassesExtractor:
         relationTester = self.relationsRegexParser.parse(test)
         #print(relationTester)
         
-        relaciones = self.obtenerRelaciones(relationParsedStory,relations,rules['Relaciones']['Incluir'],rules['Relaciones']['Excluir'])
+        relaciones = self.obtenerRelaciones(relationParsedStory,relations,rulesClases['Relaciones']['Incluir'],rulesClases['Relaciones']['Excluir'])
         #print(relaciones)
         
         return relaciones
