@@ -300,7 +300,7 @@ class CaseUseExtractor:
                     ActorsRelations.append(relacionTemp)
             elif len(relacion) == 3:
                 ActorsRelations.append(relacion)
-        
+        actors = list(set(actors))
         return actors, ActorsRelations
 
     def construirArregloCU(self, arrayCU):
@@ -311,6 +311,8 @@ class CaseUseExtractor:
                 UseCases[cu[0]] = []
             
             UseCases[cu[0]].append(cu[1])
+            arrTemp = list(set(UseCases[cu[0]]))
+            UseCases[cu[0]] = arrTemp
 
         return UseCases
 
