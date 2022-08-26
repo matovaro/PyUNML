@@ -504,7 +504,7 @@ class ClassesExtractor:
             aparicionesH2,objRelH2 = self.numAparObjeto(r[2],ClassRelations['COMP']['H2'],0) 
             boolUnicaRelacion = aparicionesH1 < 2 and aparicionesH2 < 2 and len(list(set(objRelH1 + objRelH2))) < 2
 
-            if r[2] not in classes['Resultados']:
+            if r[2] not in classes['Resultados'] or True:
                 atributos.append((r[0],r[2]))
 
         for r in ClassRelations['COMP']['H2']:
@@ -512,7 +512,7 @@ class ClassesExtractor:
             aparicionesH2,objRelH2 = self.numAparObjeto(r[0],ClassRelations['COMP']['H2'],0) 
             boolUnicaRelacion = aparicionesH1 < 2 and aparicionesH2 < 2 and len(list(set(objRelH1 + objRelH2))) < 2
 
-            if r[0] not in classes['Resultados']:
+            if r[0] not in classes['Resultados'] or True:
                 atributos.append((r[2],r[0]))
 
         ######################################################################
