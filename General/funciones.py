@@ -6,7 +6,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 def verificationReglas(word):
   
   #Pendiente: Ajustar resultados de patrones a condiciones de evitar estas palabras segun Btoush y la relacion "A is a B"
-  J= ['número', 'no', 'codigo', 'fecha', 'tipo', 'volumen', 'nacimiento', 'id', 'dirección', 'nombre']
+  J= ['número', 'no', 'código', 'fecha', 'tipo', 'volumen', 'nacimiento', 'id', 'dirección', 'nombre']
   stop_sustantivo=['base_de_datos','base_de_dato','base_dato', 'registro', 'sistema', 'información', 'organización',  'detalle','cosa']
 
   
