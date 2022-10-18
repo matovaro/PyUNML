@@ -52,7 +52,7 @@ rulesClases = {
           'TYPE_OPTIONS':[
                 'tipo',
                 'clase',
-                'categoria',
+                'categoría',
                 'especie',
                 'genero',
                 'variedad'
