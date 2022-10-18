@@ -272,17 +272,9 @@ class ClassesExtractor:
         preAtributos = ClassRelations['COMP']['H1'] + ClassRelations['COMP']['H2']
         atributos = []
         for r in ClassRelations['COMP']['H1']:
-            aparicionesH1,objRelH1 = self.numAparObjeto(r[2],ClassRelations['COMP']['H1'],2) 
-            aparicionesH2,objRelH2 = self.numAparObjeto(r[2],ClassRelations['COMP']['H2'],0) 
-            boolUnicaRelacion = aparicionesH1 < 2 and aparicionesH2 < 2 and len(list(set(objRelH1 + objRelH2))) < 2
-
             atributos.append((r[0],r[2]))
 
         for r in ClassRelations['COMP']['H2']:
-            aparicionesH1,objRelH1 = self.numAparObjeto(r[0],ClassRelations['COMP']['H1'],2) 
-            aparicionesH2,objRelH2 = self.numAparObjeto(r[0],ClassRelations['COMP']['H2'],0) 
-            boolUnicaRelacion = aparicionesH1 < 2 and aparicionesH2 < 2 and len(list(set(objRelH1 + objRelH2))) < 2
-
             atributos.append((r[2],r[0]))
 
         ######################################################################
