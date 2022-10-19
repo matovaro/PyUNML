@@ -17,7 +17,7 @@ class DiagramFileGenerator:
                 raise
 
     def EntitiesFile(self, entities):
-        nameFile = self.ResultsFolder + '/' + self.FileName + '-Entities.txt'
+        nameFile = self.ResultsFolder + '/' + self.FileName + '-Entidades.txt'
         EntFile = open(nameFile,'a')
 
         EntFile.write('---------- LISTA DE ENTIDADES -----------' +'\n')
@@ -31,7 +31,7 @@ class DiagramFileGenerator:
         return nameFile
 
     def ClassFile(self, arrayClasses):
-        nameFile = self.ResultsFolder + '/' + self.FileName + '-Classes.txt'
+        nameFile = self.ResultsFolder + '/' + self.FileName + '-Clases.txt'
 
         classes = arrayClasses['Clases']
         relations = arrayClasses['Relaciones']
@@ -74,7 +74,7 @@ class DiagramFileGenerator:
         return nameFile
 
     def CaseUseFile(self, CaseUseArray):
-        nameFile = self.ResultsFolder + '/' + self.FileName + '-CaseUse'
+        nameFile = self.ResultsFolder + '/' + self.FileName + '-CasoUso'
 
         
         for actor in CaseUseArray.keys():
