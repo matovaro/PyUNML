@@ -255,11 +255,12 @@ def construirArregloClases(atributos,metodos,relaciones):
   clasesFinales = []
   for relacion in relaciones:
       ### Por EVALUAR ###
+      '''
       if relacion[0] not in clases and relacion[1] in arregloDiagrama['Clases']:
           clases[relacion[0]] = {}
       if relacion[1] not in clases and relacion[0] in arregloDiagrama['Clases']:
           clases[relacion[1]] = {}
-  
+      '''
       #####################
 
       if relacion[0] in clases.keys() and relacion[1] in clases.keys() and [relacion[0],relacion[1]] not in relacionesAdicionadas:
