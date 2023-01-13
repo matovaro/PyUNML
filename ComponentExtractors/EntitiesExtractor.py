@@ -22,7 +22,6 @@ class EntitiesExtractor:
         cs = self.RegexParser.parse(arrayTagged)
         entitiesStringArray=[]
         for n in cs:
-          word=[]
           if(type(n)==nltk.tree.Tree):
             word = fc.contructionWord(n)
             if fc.verificationReglas(word):

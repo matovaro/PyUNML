@@ -92,14 +92,11 @@ class ClassesExtractor:
     def RelationRegexParser(self):
         return self.relationsRegexParser
 
-    ########################### Funciones
-
     def ClassesExtraction(self, arrayTagged):
         classStringArray = []
         classParsedStory = self.classRegexParser.parse(arrayTagged)
 
         for n in classParsedStory:
-            word=[]
             if(type(n)==nltk.tree.Tree):
                 word = fc.contructionWordSustantivo(n)
                 if fc.verificationReglasClase(word):
@@ -111,16 +108,8 @@ class ClassesExtractor:
     def RelationsExtraction(self, arrayTagged,relations):
         relationParsedStory = self.relationsRegexParser.parse(arrayTagged)
 
-        test = []
-        for pr in arrayTagged:
-            test.append((pr[0],pr[1]))
-        relationTester = self.relationsRegexParser.parse(test)
-        #print(relationTester)
-        
-        #print(relations)
         relaciones = fc.obtenerRelaciones(relationParsedStory,relations,rulesClases['Relaciones']['Incluir'],rulesClases['Relaciones']['Excluir'], rulesClases)
-        #print(relaciones)
-        
+
         return relaciones
     
     def depuracionRelaciones(self, arrRel):
@@ -268,14 +257,12 @@ class ClassesExtractor:
         ######################                      ##########################
         ######################################################################
 
-
-        preAtributos = ClassRelations['COMP']['H1'] + ClassRelations['COMP']['H2']
         atributos = []
         for r in ClassRelations['COMP']['H1']:
-            atributos.append((r[0],r[2]))
+            atributos.append((r[0], r[2]))
 
         for r in ClassRelations['COMP']['H2']:
-            atributos.append((r[2],r[0]))
+            atributos.append((r[2], r[0]))
 
         ######################################################################
         ######################                      ##########################

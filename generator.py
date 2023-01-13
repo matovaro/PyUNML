@@ -6,8 +6,7 @@ from ComponentExtractors.ClassesExtractor import ClassesExtractor as CE
 from ComponentExtractors.CaseUseExtractor import CaseUseExtractor as CUE
 from Generators.DiagramFileGenerator import DiagramFileGenerator as DFG
 
-txtArchivo = 'USTest.txt'
-#txtArchivo = input('Ruta o nombre del archivo de texto: ')
+txtArchivo = input('Ruta o nombre del archivo de texto: ')
 
 
 NLPObj = NLP()

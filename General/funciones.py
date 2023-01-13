@@ -5,7 +5,6 @@ from sklearn.feature_extraction.text import CountVectorizer
 
 def verificationReglas(word):
   
-  #Pendiente: Ajustar resultados de patrones a condiciones de evitar estas palabras segun Btoush y la relacion "A is a B"
   J= ['número', 'no', 'código', 'fecha', 'tipo', 'volumen', 'nacimiento', 'id', 'dirección', 'nombre']
   stop_sustantivo=['base_de_datos','base_de_dato','base_dato', 'registro', 'sistema', 'información', 'organización',  'detalle','cosa']
 
@@ -23,9 +22,7 @@ def verificationReglas(word):
     return False
 
 def contructionWord(ntree):
-  #print(n.label())
   word=[]
-  word2=[]
   for i in ntree:
     caracteristicas = i[4][0][0].split('|')
 
@@ -47,13 +44,9 @@ def userStoryTagged(txtUserStory, NLPObj):
     
     return arrayWordsTagged
 
-
-########################### Funciones
-
 # Metodo para la remoción de palabras que no seran tenidas en cuenta en el analisis, debido a que podrian causar ruido
 def verificationReglasClase(word):
     
-  #Pendiente: Ajustar resultados de patrones a condiciones de evitar estas palabras segun Btoush y la relacion "A is a B"
   J= ['número', 'no', 'codigo', 'fecha', 'tipo', 'volumen', 'nacimiento', 'id', 'dirección', 'nombre']
   stop_sustantivo=['base_de_datos','base_de_dato','base_dato', 'registro', 'sistema', 'información', 'organización',  'detalle','cosa']
 
@@ -72,9 +65,7 @@ def verificationReglasClase(word):
 
 #Metodo que determina si una palabra esta en plural o singular, devuelve su correspondiente singular y retorna un array con las palabras del sustantivo compuesto
 def contructionWordSustantivo(ntree, exclusionRules = []):
-  #print(n.label())
   word=[]
-  word2=[]
   for i in ntree:
 
       if(type(i)==nltk.tree.Tree and i.label() not in exclusionRules):
@@ -134,7 +125,6 @@ def relacionesSustComp(txtRegla,arrDatos):
           arrRelaciones = obtenerRelacionesSustComp(arrTemp,'ADP')
 
   return arrRelaciones
-
 
 def relacionesHerencia(arrRelacion, arrRelacionesTotal, rules):
   sustComp = arrRelacion[2].split('_')
@@ -254,7 +244,7 @@ def construirArregloClases(atributos,metodos,relaciones):
 
   clasesFinales = []
   for relacion in relaciones:
-      ### Por EVALUAR ###
+      ### Descomentar para mantener clases relacionadas a otras sin metodos o atributos ###
       '''
       if relacion[0] not in clases and relacion[1] in arregloDiagrama['Clases']:
           clases[relacion[0]] = {}

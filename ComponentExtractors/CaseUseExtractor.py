@@ -11,12 +11,9 @@ rulesActors = {
     'Actores':{
         'Reglas':
             r"""
-                EXC_TERM4: {(<ADP>|<DET>|<ADJ>)*}
-                EXC_TERM1: {(<ADJ>|<DET>)*}
-                EXC_TERM2: {<PUNCT><VERB>(<AUX>|<SCONJ>|<PRON>)*}
-                EXC_TERM3: {(<PROPN>|<PRON>|<ADV>)*}
+                EXC_TERM1: {(<ADP>|<DET>|<ADJ>)*}
                 SUST: {(<SUST_1>|<SUST_2>)+}
-                SUST_1: {(<NOUN>|<PROPN>)((<EXC_TERM4>)+(<NOUN>|<PROPN>)+)+}
+                SUST_1: {(<NOUN>|<PROPN>)((<EXC_TERM1>)+(<NOUN>|<PROPN>)+)+}
                 SUST_2: {(<NOUN>|<PROPN>)+}
             """
     },
@@ -54,10 +51,7 @@ class CaseUseExtractor:
 
         ###### Extraccion de actor
         actoresParsedStory = self.actorsRegexParser.parse(arrayUSTaggedShort)
-        #print(actoresParsedStory)
         for n in actoresParsedStory:
-            word=[]
-            
             if(type(n)==nltk.tree.Tree and n.label() == 'SUST' and countSust == 0):
                 countSust += 1
                 word = fc.contructionWordSustantivo(n[0])
