@@ -92,27 +92,27 @@ class ClassesExtractor:
     def RelationRegexParser(self):
         return self.relationsRegexParser
 
-    def ClassesExtraction(self, arrayTagged):
+    def extractClasses(self, arrayTagged):
         classStringArray = []
         classParsedStory = self.classRegexParser.parse(arrayTagged)
 
         for n in classParsedStory:
             if(type(n)==nltk.tree.Tree):
-                word = fc.contructionWordSustantivo(n)
-                if fc.verificationReglasClase(word):
+                word = fc.getNoun(n)
+                if fc.verifyClassRules(word):
                     classStringArray.append("_".join(word))
                 classString=" ".join(classStringArray)
         
         return classString
 
-    def RelationsExtraction(self, arrayTagged,relations):
+    def extractRelations(self, arrayTagged, relations):
         relationParsedStory = self.relationsRegexParser.parse(arrayTagged)
 
-        relaciones = fc.obtenerRelaciones(relationParsedStory,relations,rulesClases['Relaciones']['Incluir'],rulesClases['Relaciones']['Excluir'], rulesClases)
+        relaciones = fc.getRelations(relationParsedStory, relations, rulesClases['Relaciones']['Incluir'], rulesClases['Relaciones']['Excluir'], rulesClases)
 
         return relaciones
     
-    def depuracionRelaciones(self, arrRel):
+    def debugRelations(self, arrRel):
         relaciones = []
         entidadesRelaciones = []
         #ASOC
@@ -158,7 +158,7 @@ class ClassesExtractor:
         entidadesRelaciones = list(set(entidadesRelaciones))
         return relaciones,entidadesRelaciones,arrRelAssigned
 
-    def numAparObjeto(self, objeto,array,index):
+    def getCountAparitionsObject(self, objeto, array, index):
         counter = 0
         objetosRelacionados = []
 
@@ -175,8 +175,8 @@ class ClassesExtractor:
 
     
     def ClassesProcessing(self, ClassRelations, ClassList):
-        relacionesProcesadas,preClases,arrClavesRelaciones = self.depuracionRelaciones(ClassRelations)
-        classes= fc.obtenerResultadosFrecuencia(ClassList)
+        relacionesProcesadas,preClases,arrClavesRelaciones = self.debugRelations(ClassRelations)
+        classes= fc.getResultsFrequency(ClassList)
 
         ######################################################################
         ######################            ####################################
@@ -191,7 +191,7 @@ class ClassesExtractor:
         for rel in ClassRelations['ASOC']['R3']:
             ## Revisa si el sustantivo de la relacion puede ser reducido y lo hace si si
             pclass2 = rel[2].split('_')[0]
-            aparicionesClass2,objRelClass2 = self.numAparObjeto(pclass2,ClassRelations['COMP']['H2'],0)
+            aparicionesClass2,objRelClass2 = self.getCountAparitionsObject(pclass2, ClassRelations['COMP']['H2'], 0)
             if pclass2 in preClases or aparicionesClass2 > 1:
                 rel[2] = pclass2
 
@@ -210,8 +210,8 @@ class ClassesExtractor:
             ## Revisa si el sustantivo de la relacion puede ser reducido y lo hace si si
             pclass1 = rel[0].split('_')[0]
             pclass2 = rel[2].split('_')[0]
-            aparicionesClass1,objRelClass1 = self.numAparObjeto(pclass1,ClassRelations['COMP']['H2'],0)
-            aparicionesClass2,objRelClass2 = self.numAparObjeto(pclass2,ClassRelations['COMP']['H2'],0)
+            aparicionesClass1,objRelClass1 = self.getCountAparitionsObject(pclass1, ClassRelations['COMP']['H2'], 0)
+            aparicionesClass2,objRelClass2 = self.getCountAparitionsObject(pclass2, ClassRelations['COMP']['H2'], 0)
             if pclass1 in preClases or aparicionesClass1 > 1:
                 rel[0] = pclass1
             if pclass2 in preClases or aparicionesClass2 > 1:
@@ -241,8 +241,8 @@ class ClassesExtractor:
             ## Revisa si el sustantivo de la relacion puede ser reducido y lo hace si si
             pclass1 = rel[0].split('_')[0]
             pclass2 = rel[1].split('_')[0]
-            aparicionesClass1,objRelClass1 = self.numAparObjeto(pclass1,ClassRelations['COMP']['H2'],0)
-            aparicionesClass2,objRelClass2 = self.numAparObjeto(pclass2,ClassRelations['COMP']['H2'],0)
+            aparicionesClass1,objRelClass1 = self.getCountAparitionsObject(pclass1, ClassRelations['COMP']['H2'], 0)
+            aparicionesClass2,objRelClass2 = self.getCountAparitionsObject(pclass2, ClassRelations['COMP']['H2'], 0)
             if pclass1 in preClases or aparicionesClass1 > 1:
                 rel[0] = pclass1
             if pclass2 in preClases or aparicionesClass2 > 1:
@@ -285,7 +285,7 @@ class ClassesExtractor:
                 #relacionesFinales.append(rel)
                 metodos.append((rel[0],'_'.join([rel[1],rel[2]])))
 
-        arregloClases = fc.construirArregloClases(atributos,metodos,relacionesFinales)
+        arregloClases = fc.getClassesArray(atributos, metodos, relacionesFinales)
         classes['Resultados'] = arregloClases['Clases'].keys()
 
         return arregloClases

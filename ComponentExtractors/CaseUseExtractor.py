@@ -46,7 +46,7 @@ class CaseUseExtractor:
     def RelationRegexParser(self):
         return self.relationsRegexParser
 
-    def CaseUseExtraction(self, arrayUSTagged, arrayUSTaggedShort, actors, ActorsRelations):
+    def extractCaseUse(self, arrayUSTagged, arrayUSTaggedShort, actors, ActorsRelations):
         countSust = 0
 
         ###### Extraccion de actor
@@ -54,7 +54,7 @@ class CaseUseExtractor:
         for n in actoresParsedStory:
             if(type(n)==nltk.tree.Tree and n.label() == 'SUST' and countSust == 0):
                 countSust += 1
-                word = fc.contructionWordSustantivo(n[0])
+                word = fc.getNoun(n[0])
                 actor = "_".join(word)
 
                 if actor not in actors:
@@ -67,7 +67,7 @@ class CaseUseExtractor:
             if(type(n)==nltk.tree.Tree and n.label() == 'R1'):
                 for item in n:
                     if(type(item)==nltk.tree.Tree and item.label() == 'SUST'):
-                        word = fc.contructionWordSustantivo(item[0])
+                        word = fc.getNoun(item[0])
                         SUST = "_".join(word)
 
                         relacion.append(SUST)
@@ -85,7 +85,7 @@ class CaseUseExtractor:
         actors = list(set(actors))
         return actors, ActorsRelations
 
-    def construirArregloCU(self, arrayCU):
+    def getCaseUseArray(self, arrayCU):
         UseCases = {}
 
         for cu in arrayCU:
@@ -104,5 +104,5 @@ class CaseUseExtractor:
             if rel[0] in actors:
                 relacionesFinales.append([rel[0], rel[1]+' '+rel[2]])
         
-        UseCases = self.construirArregloCU(relacionesFinales)
+        UseCases = self.getCaseUseArray(relacionesFinales)
         return UseCases

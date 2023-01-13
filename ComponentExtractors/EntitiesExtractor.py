@@ -18,13 +18,13 @@ class EntitiesExtractor:
     def __init__(self):
         self.RegexParser = NLP.RegexParser(entitiesRules)
 
-    def EntitiesStory(self, arrayTagged, StoryEntities):
+    def getStoryEntities(self, arrayTagged, StoryEntities):
         cs = self.RegexParser.parse(arrayTagged)
         entitiesStringArray=[]
         for n in cs:
           if(type(n)==nltk.tree.Tree):
-            word = fc.contructionWord(n)
-            if fc.verificationReglas(word):
+            word = fc.getWord(n)
+            if fc.verifyRules(word):
               entitiesStringArray.append("_".join(word))
             entitiesString=" ".join(entitiesStringArray)
               
@@ -32,7 +32,7 @@ class EntitiesExtractor:
 
         return StoryEntities
     
-    def EntitiesExtraction(self, StoriesEntities):
+    def extractEntities(self, StoriesEntities):
         vectorizer = CountVectorizer()
         X = vectorizer.fit_transform(StoriesEntities)
         frecuencias=X.toarray()

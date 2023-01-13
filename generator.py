@@ -52,25 +52,25 @@ numberLine = 1
 
 for line in lines:
     print('Historia #'+str(numberLine)+' ...')
-    arrayUSTagged = fc.userStoryTagged(line, NLPObj)
-    arrayUSTaggedShort = fc.userStoryTagged(line.split(',')[0], NLPObj)
+    arrayUSTagged = fc.tagUserStory(line, NLPObj)
+    arrayUSTaggedShort = fc.tagUserStory(line.split(',')[0], NLPObj)
 
     #Entidades
-    EntitiesList = EntitiesExtr.EntitiesStory(arrayUSTagged, EntitiesList)
+    EntitiesList = EntitiesExtr.getStoryEntities(arrayUSTagged, EntitiesList)
 
     #Clases
-    ClassList.append(ClassExtr.ClassesExtraction(arrayUSTagged))
+    ClassList.append(ClassExtr.extractClasses(arrayUSTagged))
 
-    ClassRelations = ClassExtr.RelationsExtraction(arrayUSTagged,ClassRelations)
+    ClassRelations = ClassExtr.extractRelations(arrayUSTagged, ClassRelations)
 
     #Casos de uso
-    ActorsList, ActorsRelations = CaseUseExtr.CaseUseExtraction(arrayUSTagged, arrayUSTaggedShort, ActorsList, ActorsRelations)
+    ActorsList, ActorsRelations = CaseUseExtr.extractCaseUse(arrayUSTagged, arrayUSTaggedShort, ActorsList, ActorsRelations)
 
     numberLine = numberLine + 1
 
 f_obj.close()
 
-StoryEntities = EntitiesExtr.EntitiesExtraction(EntitiesList)
+StoryEntities = EntitiesExtr.extractEntities(EntitiesList)
 
 StoryClasses = ClassExtr.ClassesProcessing(ClassRelations, ClassList)
 
@@ -79,17 +79,17 @@ StoryCaseUse = CaseUseExtr.CaseUseProcessing(ActorsList, ActorsRelations)
 print('')
 print('############################# ENTIDADES ###################################')
 #print(StoryEntities)
-entFile = FileGenerator.EntitiesFile(StoryEntities)
+entFile = FileGenerator.getEntitiesFile(StoryEntities)
 print(entFile)
 
 print('')
 print('############################# CLASES ###################################')
 #print(StoryClasses)
-classFile = FileGenerator.ClassFile(StoryClasses)
+classFile = FileGenerator.getClassFile(StoryClasses)
 print(classFile)
 
 print('')
 print('############################# CASOS DE USO ###################################')
 #print(StoryCaseUse)
-caseFile = FileGenerator.CaseUseFile(StoryCaseUse)
+caseFile = FileGenerator.getCaseUseFile(StoryCaseUse)
 print(caseFile)

@@ -3,7 +3,7 @@ import nltk
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 
-def verificationReglas(word):
+def verifyRules(word):
   
   J= ['número', 'no', 'código', 'fecha', 'tipo', 'volumen', 'nacimiento', 'id', 'dirección', 'nombre']
   stop_sustantivo=['base_de_datos','base_de_dato','base_dato', 'registro', 'sistema', 'información', 'organización',  'detalle','cosa']
@@ -21,7 +21,7 @@ def verificationReglas(word):
   else:
     return False
 
-def contructionWord(ntree):
+def getWord(ntree):
   word=[]
   for i in ntree:
     caracteristicas = i[4][0][0].split('|')
@@ -33,7 +33,7 @@ def contructionWord(ntree):
     #word2.append([i[0],i[1],i[2],i[3],i[4]])
   return word
   
-def userStoryTagged(txtUserStory, NLPObj):
+def tagUserStory(txtUserStory, NLPObj):
     arrayWordsTagged = []
     StanzaParser = NLPObj.StanzaParser()
     docStanzaSpanish = StanzaParser(txtUserStory.lower())
@@ -45,7 +45,7 @@ def userStoryTagged(txtUserStory, NLPObj):
     return arrayWordsTagged
 
 # Metodo para la remoción de palabras que no seran tenidas en cuenta en el analisis, debido a que podrian causar ruido
-def verificationReglasClase(word):
+def verifyClassRules(word):
     
   J= ['número', 'no', 'codigo', 'fecha', 'tipo', 'volumen', 'nacimiento', 'id', 'dirección', 'nombre']
   stop_sustantivo=['base_de_datos','base_de_dato','base_dato', 'registro', 'sistema', 'información', 'organización',  'detalle','cosa']
@@ -64,12 +64,12 @@ def verificationReglasClase(word):
       return False
 
 #Metodo que determina si una palabra esta en plural o singular, devuelve su correspondiente singular y retorna un array con las palabras del sustantivo compuesto
-def contructionWordSustantivo(ntree, exclusionRules = []):
+def getNoun(ntree, exclusionRules = []):
   word=[]
   for i in ntree:
 
       if(type(i)==nltk.tree.Tree and i.label() not in exclusionRules):
-          wordTemp = contructionWordSustantivo(i, exclusionRules)
+          wordTemp = getNoun(i, exclusionRules)
           if wordTemp:
               word.append(wordTemp)
       elif(type(i)!=nltk.tree.Tree):
@@ -85,7 +85,7 @@ def contructionWordSustantivo(ntree, exclusionRules = []):
       #word2.append([i[0],i[1],i[2],i[3],i[4]])
   return word
 
-def obtenerRelacionesSustComp(arrSustantivo, unionWord = 'UNION'):
+def getCompNounRelations(arrSustantivo, unionWord ='UNION'):
   arrRelaciones = []
   idx_1 = 0
   idx_2 = 1
@@ -95,7 +95,7 @@ def obtenerRelacionesSustComp(arrSustantivo, unionWord = 'UNION'):
       idx_2 += 1
   return arrRelaciones
 
-def relacionesSustComp(txtRegla,arrDatos):
+def getCompNounRelationsByRule(txtRegla, arrDatos):
   arrRelaciones = []
   if(txtRegla == "H2"):
       # Particionamos el sust. compuesto en sustantivos simples
@@ -103,7 +103,7 @@ def relacionesSustComp(txtRegla,arrDatos):
       if len(arrSustantivo) > 1:
           # Si hay mas de un sustantivo, creamos una relacion por cada pareja consecutiva del 
           # sust. compuesto
-          arrRelaciones = obtenerRelacionesSustComp(arrSustantivo)
+          arrRelaciones = getCompNounRelations(arrSustantivo)
   elif(txtRegla == "R3"):
       txtADP = ''
       susts = [[]]
@@ -122,11 +122,11 @@ def relacionesSustComp(txtRegla,arrDatos):
           for itm in susts:
               arrTemp.append('_'.join(itm))
           
-          arrRelaciones = obtenerRelacionesSustComp(arrTemp,'ADP')
+          arrRelaciones = getCompNounRelations(arrTemp, 'ADP')
 
   return arrRelaciones
 
-def relacionesHerencia(arrRelacion, arrRelacionesTotal, rules):
+def getInheritanceRelations(arrRelacion, arrRelacionesTotal, rules):
   sustComp = arrRelacion[2].split('_')
   if(sustComp[0] in rules['Relaciones']['TYPE_OPTIONS'] and len(sustComp) > 1):
       newSust = '_'.join(sustComp[1:])
@@ -136,15 +136,15 @@ def relacionesHerencia(arrRelacion, arrRelacionesTotal, rules):
       arrRelacionesTotal["HER"]["H4"].append(arrRelacion)
   return arrRelacionesTotal
 
-def flatTree(parsed,arrItems):
+def getFlatTree(parsed, arrItems):
   for ele in parsed:
       if isinstance(ele, list):
-          arrItems = flatTree(ele,arrItems)
+          arrItems = getFlatTree(ele, arrItems)
       else:
           arrItems.append((ele[0], ele[1]))
   return arrItems
 
-def obtenerRelaciones(arrayParsed,relaciones,inclusionRules = [],exclusionRules = [],rules = []):
+def getRelations(arrayParsed, relaciones, inclusionRules = [], exclusionRules = [], rules = []):
   for ele in arrayParsed:
     word=[]
     #Validamos si el elemento es un arbol
@@ -157,10 +157,10 @@ def obtenerRelaciones(arrayParsed,relaciones,inclusionRules = [],exclusionRules 
         for item in ele:
           if type(item)==nltk.tree.Tree:
             if item.label() == 'SUST':
-              txtSustantivo = '_'.join(contructionWordSustantivo(item,exclusionRules)[0])
-              relaciones["COMP"]["H2"] = relaciones["COMP"]["H2"] + relacionesSustComp("H2",txtSustantivo)
-              arrTreeFlat = flatTree(item,[])
-              relaciones["ASOC"]["R3"] = relaciones["ASOC"]["R3"] + relacionesSustComp("R3",arrTreeFlat)
+              txtSustantivo = '_'.join(getNoun(item, exclusionRules)[0])
+              relaciones["COMP"]["H2"] = relaciones["COMP"]["H2"] + getCompNounRelationsByRule("H2", txtSustantivo)
+              arrTreeFlat = getFlatTree(item, [])
+              relaciones["ASOC"]["R3"] = relaciones["ASOC"]["R3"] + getCompNounRelationsByRule("R3", arrTreeFlat)
               relacion.append(txtSustantivo)
           elif item[1]!='CCONJ':
             if ele.label() in ["R1","R3"]:
@@ -186,7 +186,7 @@ def obtenerRelaciones(arrayParsed,relaciones,inclusionRules = [],exclusionRules 
             elif ele.label() in ["H4"]:
               # H4 y H5
               relacionTemp = [relacion[0],relacion[index],relacion[len(relacion)-1]]
-              relaciones = relacionesHerencia(relacionTemp,relaciones,rules)
+              relaciones = getInheritanceRelations(relacionTemp, relaciones, rules)
               #relaciones["HER"]["H4"].append(relacionTemp)
         elif len(relacion) == 3:
           #Guarda la relacion en la categoria correspondiente
@@ -198,12 +198,12 @@ def obtenerRelaciones(arrayParsed,relaciones,inclusionRules = [],exclusionRules 
               relaciones["ASOC"][ele.label()].append(relacion)
           elif ele.label() in ["H4"]:
             # H4 y H5
-            relaciones = relacionesHerencia(relacion,relaciones,rules)
+            relaciones = getInheritanceRelations(relacion, relaciones, rules)
             #relaciones["HER"]["H4"].append(relacion)
   return relaciones
 
 ## Analiza un string recibido y retorna la frecuencia de los terminos que incluye
-def obtenerResultadosFrecuencia(txtStringComponentes):
+def getResultsFrequency(txtStringComponentes):
   vectorizer = CountVectorizer()
   X = vectorizer.fit_transform(txtStringComponentes)
   frecuencias=X.toarray()
@@ -216,7 +216,7 @@ def obtenerResultadosFrecuencia(txtStringComponentes):
   componentsStory = component_list
   return {'Frecuencia': componentsFrecuencyStory, 'Resultados':componentsStory}
 
-def construirArregloClases(atributos,metodos,relaciones):
+def getClassesArray(atributos, metodos, relaciones):
   arregloDiagrama = {}
   clases = {}
   for atributo in atributos:

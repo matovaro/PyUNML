@@ -16,7 +16,8 @@ class DiagramFileGenerator:
             if e.errno != errno.EEXIST:
                 raise
 
-    def EntitiesFile(self, entities):
+
+    def getEntitiesFile(self, entities):
         nameFile = self.ResultsFolder + '/' + self.FileName + '-Entidades.txt'
         EntFile = open(nameFile,'a')
 
@@ -30,7 +31,7 @@ class DiagramFileGenerator:
         
         return nameFile
 
-    def ClassFile(self, arrayClasses):
+    def getClassFile(self, arrayClasses):
         nameFile = self.ResultsFolder + '/' + self.FileName + '-Clases.txt'
 
         classes = arrayClasses['Clases']
@@ -73,7 +74,7 @@ class DiagramFileGenerator:
 
         return nameFile
 
-    def CaseUseFile(self, CaseUseArray):
+    def getCaseUseFile(self, CaseUseArray):
         nameFile = self.ResultsFolder + '/' + self.FileName + '-CasoUso'
 
         
