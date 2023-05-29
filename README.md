@@ -27,3 +27,7 @@ Ruta o nombre del archivo de texto: USTest.txt
 ```
 
 Una vez ingresado el archivo, el software iniciará el análisis automáticamente y procederá a generar los correspondientes diagramas de clase y casos de uso (Puede tardar 1 o 2 minutos).
+
+## Referencia
+- Tovar Onofre, M. (2023). Generación de diagramas de clase y casos de uso a partir de historias de usuario utilizando procesamiento de lenguaje natural. Universidad Nacional de Colombia. (https://repositorio.unal.edu.co/handle/unal/83672)
+- Dataset: https://github.com/matovaro/PyUNML-DataSet
